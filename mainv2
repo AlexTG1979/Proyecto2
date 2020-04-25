@@ -1,0 +1,284 @@
+#include <iostream>
+#include <fstream>
+#include "Hora.h"
+#include "Actor.h"
+#include "Funcion.h"
+#include "Pelicula.h"
+using namespace std;
+
+int main()
+{
+  Actor Actores[20];
+  Funcion Funciones[20];
+  Pelicula Peliculas[20];
+  int iID;
+  int iNumActor = 0;
+  string sNombreActor;
+  int iIDActor;
+  int iNumeroPelicula;
+  int iAnio;
+  int iDuracion;
+  string sGenero;
+  int iCantidadActores;
+  string sTitulo;
+  int iPelicula = 0;
+  int iSala;
+  int iHora;
+  int iMinuto;
+  int iNumFuncion = 0;
+  string sClave;
+  int iX;
+  int iY;
+  int iZ;
+  int iC;
+  char cOpcion1 = 'a';
+  char cOpcion2;
+  bool bValor = false;
+
+  ifstream ifActores;
+  ifstream ifPeliculas;
+
+  ifActores.open("actores.txt");
+
+  while(!ifActores.eof())
+  {
+    ifActores >> iID;
+    getline(ifActores, sNombreActor);
+    Actores[iNumActor].setID(iID);
+    Actores[iNumActor].setNombre(sNombreActor);
+
+    iNumActor++;
+  }
+  ifActores.close();
+
+  ifPeliculas.open("peliculas.txt");
+
+  while(!ifPeliculas.eof())
+  {
+    ifPeliculas >> iNumeroPelicula >> iAnio >> iDuracion >> sGenero >> iCantidadActores;
+
+    Peliculas[iPelicula].setNumPelicula(iNumeroPelicula);
+    Peliculas[iPelicula].setAnio(iAnio);
+    Peliculas[iPelicula].setDuracion(iDuracion);
+    Peliculas[iPelicula].setGenero(sGenero);
+
+    for(iX = 0; iX < iCantidadActores; iX++)
+    {
+      ifPeliculas >> iIDActor;
+      Peliculas[iPelicula].addActor(iIDActor);
+    }
+    getline(ifPeliculas, sTitulo);
+
+    Peliculas[iPelicula].setTitulo(sTitulo);
+    iPelicula++;
+  }
+    ifPeliculas.close();
+
+    cout << "¡Bienvenido! Para registrar una función, ingrese la información requerida a continuación" << endl << endl;
+
+    iX = 0;
+
+    while(cOpcion1 == 'a' || cOpcion1 == 'A')
+    {
+
+    cout << "Ingrese una clave para función (Creada por usted): ";
+    cin >> sClave;
+
+    for (iY = 0; iY < 20; iY++)
+    {
+      while(sClave == Funciones[iY].getFuncion())
+      {
+        cout << "Clave en uso. Ingrese nuevamente: ";
+        cin >> sClave;
+      }
+    }
+
+    cout << "Ingrese un número de película de nuestra cartelera: " << endl;
+    cout << "# 472 - El Lobo de Wall Street" << endl;
+    cout << "# 627 - Los Juegos del Destino" << endl;
+    cout << "# 635 - El Señor de los Anillos" << endl;
+    cout << "# 246 - Los Miserables" << endl;
+    cout << "# 545 - Titanic" << endl;
+    cout << "# 324 - Los Juegos del Hambre" << endl;
+    cout << "# 527 - Joy" << endl;
+    cout << "# 827 - Pasante de Moda" << endl;
+    cout << "# 971 - Alicia en el Pais de las Maravillas" << endl;
+    cout << "# 736 - Forrest Gump" << endl;
+    cin >> iNumeroPelicula;
+
+    for (iZ = 0; iZ < 20; iZ++)
+    {
+      if(iNumeroPelicula == Peliculas[iZ].getNumPelicula())
+      {
+        bValor = true;
+      }
+    }
+    while (bValor == false)
+    {
+      cout << "El número ingresado no existe. Intente nuevamente: ";
+      cin >> iNumeroPelicula;
+
+      for(iZ = 0; iZ < 20; iZ++)
+      {
+        if(iNumeroPelicula == Peliculas[iZ].getNumPelicula())
+        {
+          bValor = true;
+        }
+      }
+    }
+    cout << "Ingrese ahora la hora de la función (Reloj de 24 hrs.): ";
+    cin >> iHora;
+
+    while (iHora < 0 || iHora > 23)
+    {
+      cout << "Hora Inválida. Ingrese nuevamente: ";
+      cin >> iHora;
+    }
+    cout << "Ingrese ahora el minuto: ";
+    cin >> iMinuto;
+
+    while (iMinuto < 0 || iMinuto > 59)
+    {
+      cout << "Minuto Inválido. Ingrese nuevamente: ";
+      cin >> iMinuto;
+    }
+    Hora hFuncion(iHora, iMinuto);
+
+    cout << "Ingrese el número de la Sala (Sala 1 a Sala 15): ";
+    cin >> iSala;
+
+    while(iSala <= 0 || iSala >= 16)
+    {
+      cout << "Número de sala inválida. Ingrese nuevamente: ";
+      cin >> iSala;
+    }
+
+    Funciones[iX].setFuncion(sClave);
+    Funciones[iX].setNumPelicula(iNumeroPelicula);
+    Funciones[iX].setHora(hFuncion);
+    Funciones[iX].setSala(iSala);
+
+    cout << "Funcion registrada exitosamente" << endl;
+    cout << "¿Que acción desea realizar a continuación?" << endl;
+    cout << "a) Registrar nueva función" << endl;
+    cout << "b) Menú de opciones" << endl;
+
+    cin >> cOpcion1;
+    iX++;
+  }
+
+  while (cOpcion1 != 'b' || cOpcion1 == 'B')
+  {
+    cout << "Acción inválida. Intente nuevamente: ";
+    cin >> cOpcion1;
+  }
+
+  while(cOpcion2 != 'g')
+  {
+    cout << "Menú Principal" << endl;
+    cout << "a) Consulta de todos los actores que están en la lista" << endl;
+    cout << "b) Consulta de todas las películas que están en la lista" << endl;
+    cout << "c) Consulta de todas las funciones disponibles" << endl;
+    cout << "d) Consulta de funciones por hora" << endl;
+    cout << "e) Consulta por clave de función" << endl;
+    cout << "f) Consulta la lista de películas en las que participa un actor" << endl;
+    cout << "g) Terminar programa" << endl;
+
+    cin >> cOpcion2;
+
+    if (cOpcion2 == 'a'|| cOpcion2 == 'A')
+    {
+      iX = 0;
+      while(Actores[iX].getID()!=0 && iX < 20)
+      {
+        cout << "Nombre del actor: "<< Actores[iX].getNombre() << endl;
+        cout << "ID de Actor: " << Actores[iX].getID() << endl << endl;
+        iX++;
+      }
+    }
+    else if(cOpcion2 == 'b' || cOpcion2 == 'B')
+    {
+      iX = 0;
+      while(Peliculas[iX].getDuracion() != -1)
+      {
+        cout << "Título: " << Peliculas[iX].getTitulo() << endl;
+        cout << "Año de lanzamiento: " << Peliculas[iX].getAnio() << endl;
+        cout << "Duración: " << Peliculas[iX].getDuracion() << " minutos" << endl;
+        cout << "Género: " << Peliculas[iX].getGenero() <<endl;
+        cout << "Actores: " <<  endl;
+        for(iY = 0; iY < Peliculas[iX].getCantidadActores(); iY++)
+        {
+          for(iZ = 0; iZ < 20; iZ++)
+          {
+            if(Peliculas[iX].getActor(iY) == Actores[iZ].getID())
+            {
+              cout << "*" << Actores[iZ].getNombre() << endl;
+            }
+          }
+        }
+        cout << endl;
+        iX++;
+      }
+    }
+    else if (cOpcion2 == 'c' || cOpcion2 == 'C')
+    {
+      iX = 0;
+      while(Funciones[iX].getNumPelicula() != -1)
+      {
+        cout << "Clave de la función: " << Funciones[iX].getFuncion() << endl;
+        cout << "Nombre de la Película: ";
+        for (iY = 0; iY < 20 ; iY++)
+        {
+          if(Funciones[iX].getNumPelicula() == Peliculas[iY].getNumPelicula())
+          {
+            cout << Peliculas[iY].getTitulo() << endl;
+          }
+        }
+        cout << "Hora: ";
+        (Funciones[iX].getHora()).toString();
+        cout << "Sala: " << Funciones[iX].getSala() << endl << endl;
+
+        iX++;
+      }
+    }
+    else if (cOpcion2 == 'd' || cOpcion2 == 'D')
+    {
+      bValor = false;
+      cout << "Ingrese el horario de la funcion" << endl;
+      cout << "Hora: ";
+      cin >> iHora;
+    
+      while(iHora < 0 || iHora > 23)
+      {
+        cout << "La hora ingresada es inválida. Ingresa nuevamente: " << endl;
+        cin >> iHora;
+      }
+      cout << "Minuto: ";
+      cin >> iMinuto;
+      while(iMinuto < 0 || iMinuto > 59)
+      {
+        cout << "El minuto ingresado es inválido. Ingresa nuevamente: " << endl;
+        cin >> iMinuto;
+      }
+      Hora hHoraN (iHora, iMinuto); 
+      for(iX = 0; iX < 20; iX++)
+      {
+        if(hHoraN == Funciones[iX].getHora())
+        {
+          for(iY = 0; iY < 20; iY++)
+          {
+            if(Funciones[iX].getNumPelicula() == Peliculas[iY].getNumPelicula())
+            {
+              cout << endl << "Película: " << Peliculas[iY].getTitulo() << endl;
+            }
+          }
+          cout << "Sala: " << Funciones[iX].getSala() << endl << endl;
+          bValor = true;
+        }
+      }
+      if(bValor == false)
+      {
+        cout << "Lo sentimos, no hay películas en el horario ingresado" << endl;
+      }
+
+    }
